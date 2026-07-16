@@ -24,7 +24,8 @@ npm start
   with `Esc`. Completing a function inserts `()` and leaves the caret inside.
 - Auto-closing parentheses: typing `(` inserts the matching `)` (wrapping any
   selection) and keeps the caret inside; typing `)` over an existing one steps past
-  it, and backspacing an empty `()` removes both.
+  it, and backspacing an empty `()` removes both. Pressing `Tab` while inside
+  parentheses jumps the caret out, past the closing `)`.
 - Syntax highlighting in the editor: variables, functions, numbers and comments each
   get a distinct color.
 - Built-in functions (comma-separated args): `min`, `max`, `sqrt`, `cbrt`, `abs`,

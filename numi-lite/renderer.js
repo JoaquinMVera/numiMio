@@ -366,6 +366,25 @@ function applyCompletion(item) {
 	editor.focus();
 }
 
+function exitParens() {
+	if (editor.selectionStart !== editor.selectionEnd) return false;
+	const text = editor.value;
+	let depth = 0;
+	for (let i = editor.selectionStart; i < text.length; i++) {
+		const c = text[i];
+		if (c === "\n") break;
+		if (c === "(") depth++;
+		else if (c === ")") {
+			if (depth === 0) {
+				editor.selectionStart = editor.selectionEnd = i + 1;
+				return true;
+			}
+			depth--;
+		}
+	}
+	return false;
+}
+
 function insertAtCaret(text) {
 	const start = editor.selectionStart;
 	const end = editor.selectionEnd;
@@ -405,6 +424,7 @@ editor.addEventListener("keydown", (event) => {
 		event.preventDefault();
 		const prefix = currentPrefix();
 		if (prefix && openAutocomplete(prefix)) return;
+		if (exitParens()) return;
 		insertAtCaret("\t");
 		return;
 	}
