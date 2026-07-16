@@ -252,6 +252,48 @@ body {
 	overflow: hidden;
 }
 
+#autocomplete {
+	position: absolute;
+	z-index: 10;
+	min-width: 120px;
+	max-width: 260px;
+	max-height: 220px;
+	overflow-y: auto;
+	margin: 2px 0 0 0;
+	padding: 4px;
+	list-style: none;
+	background: var(--panel);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	box-shadow: 0 8px 24px #00000040;
+	font-family: var(--font-family);
+	font-size: 13px;
+}
+
+#autocomplete.hidden {
+	display: none;
+}
+
+#autocomplete li {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 4px 8px;
+	border-radius: 5px;
+	color: var(--text);
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+#autocomplete li .ac-kind {
+	color: var(--muted);
+	font-size: 11px;
+}
+
+#autocomplete li.active {
+	background: var(--btn-active);
+}
+
 #editor,
 #highlight {
 	position: absolute;

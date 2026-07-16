@@ -18,6 +18,10 @@ npm start
 - Variables: `a = 5`, then reuse `a` on later lines.
 - Custom functions: `double(x) = x * 2`, then call `double(9)`. Definitions can use
   other variables and functions.
+- Autocomplete: press `Tab` to complete a variable or function name (declared vars,
+  custom/built-in functions and constants). Matching is case-insensitive; if several
+  match, a menu appears — navigate with `↑`/`↓`, accept with `Tab`/`Enter`, dismiss
+  with `Esc`.
 - Syntax highlighting in the editor: variables, functions, numbers and comments each
   get a distinct color.
 - Built-in functions (comma-separated args): `min`, `max`, `sqrt`, `cbrt`, `abs`,

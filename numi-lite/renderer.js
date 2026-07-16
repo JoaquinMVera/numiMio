@@ -171,7 +171,7 @@ function closeTab(id) {
 	renderTabs();
 }
 
-editor.addEventListener("input", () => {
+function afterEdit() {
 	const tab = activeTab();
 	if (tab) {
 		tab.content = editor.value;
@@ -180,8 +180,20 @@ editor.addEventListener("input", () => {
 	render();
 	renderTabs();
 	setWindowTitle();
+}
+
+editor.addEventListener("input", () => {
+	afterEdit();
+	if (ac.open) {
+		const prefix = currentPrefix();
+		if (!prefix) closeAutocomplete();
+		else openAutocomplete(prefix, true);
+	}
 });
-editor.addEventListener("scroll", syncScroll);
+editor.addEventListener("scroll", () => {
+	syncScroll();
+	if (ac.open) positionAutocomplete();
+});
 
 async function openFile() {
 	const file = await window.desktop.openFile();
@@ -230,6 +242,164 @@ document.addEventListener("keydown", (event) => {
 		}
 	}
 });
+
+const autocompleteEl = document.getElementById("autocomplete");
+const measureCtx = document.createElement("canvas").getContext("2d");
+const ac = { open: false, items: [], index: 0, start: 0, prefix: "" };
+
+function candidateList() {
+	const vars = new Set();
+	const funcs = new Set();
+	CalcEngine.evaluateDocument(editor.value).forEach((r) => {
+		if (r.kind === "assignment") vars.add(r.name);
+		else if (r.kind === "function") funcs.add(r.name);
+	});
+	Object.keys(CalcEngine.CONSTANTS).forEach((k) => vars.add(k));
+	Object.keys(CalcEngine.FUNCTIONS).forEach((k) => funcs.add(k));
+	const items = [];
+	vars.forEach((name) => items.push({ name, kind: "var" }));
+	funcs.forEach((name) => items.push({ name, kind: "fn" }));
+	return items;
+}
+
+function currentPrefix() {
+	if (editor.selectionStart !== editor.selectionEnd) return null;
+	const caret = editor.selectionStart;
+	const match = editor.value.slice(0, caret).match(/[a-zA-Z_]\w*$/);
+	if (!match) return null;
+	return { text: match[0], start: caret - match[0].length };
+}
+
+function caretCoordinates() {
+	const style = getComputedStyle(editor);
+	measureCtx.font = `${style.fontSize} ${style.fontFamily}`;
+	const charWidth = measureCtx.measureText("0").width;
+	const lineHeight = parseFloat(style.lineHeight);
+	const padL = parseFloat(style.paddingLeft);
+	const padT = parseFloat(style.paddingTop);
+	const before = editor.value.slice(0, editor.selectionStart);
+	const rows = before.split("\n");
+	const row = rows.length - 1;
+	const col = rows[row].length;
+	return {
+		x: padL + col * charWidth - editor.scrollLeft,
+		y: padT + (row + 1) * lineHeight - editor.scrollTop,
+	};
+}
+
+function positionAutocomplete() {
+	const { x, y } = caretCoordinates();
+	autocompleteEl.style.left = `${Math.max(0, x)}px`;
+	autocompleteEl.style.top = `${y}px`;
+}
+
+function renderAutocomplete() {
+	autocompleteEl.innerHTML = "";
+	ac.items.forEach((item, i) => {
+		const li = document.createElement("li");
+		if (i === ac.index) li.className = "active";
+		const name = document.createElement("span");
+		name.textContent = item.name;
+		const kind = document.createElement("span");
+		kind.className = "ac-kind";
+		kind.textContent = item.kind;
+		li.appendChild(name);
+		li.appendChild(kind);
+		li.addEventListener("mousedown", (event) => {
+			event.preventDefault();
+			applyCompletion(item.name);
+		});
+		autocompleteEl.appendChild(li);
+	});
+	autocompleteEl.classList.remove("hidden");
+}
+
+function openAutocomplete(prefix, keepOpenOnly) {
+	const lower = prefix.text.toLowerCase();
+	const matches = candidateList()
+		.filter((item) => item.name.toLowerCase().startsWith(lower) && item.name !== prefix.text)
+		.sort((a, b) => a.name.length - b.name.length || a.name.localeCompare(b.name));
+
+	if (matches.length === 0) {
+		closeAutocomplete();
+		return keepOpenOnly ? true : false;
+	}
+	if (matches.length === 1 && !keepOpenOnly) {
+		ac.start = prefix.start;
+		ac.prefix = prefix.text;
+		applyCompletion(matches[0].name);
+		return true;
+	}
+	ac.open = true;
+	ac.items = matches;
+	ac.index = 0;
+	ac.start = prefix.start;
+	ac.prefix = prefix.text;
+	renderAutocomplete();
+	positionAutocomplete();
+	return true;
+}
+
+function closeAutocomplete() {
+	ac.open = false;
+	autocompleteEl.classList.add("hidden");
+}
+
+function applyCompletion(name) {
+	const caret = editor.selectionStart;
+	editor.value = editor.value.slice(0, ac.start) + name + editor.value.slice(caret);
+	const newCaret = ac.start + name.length;
+	editor.selectionStart = editor.selectionEnd = newCaret;
+	closeAutocomplete();
+	afterEdit();
+	syncScroll();
+	editor.focus();
+}
+
+function insertAtCaret(text) {
+	const start = editor.selectionStart;
+	const end = editor.selectionEnd;
+	editor.value = editor.value.slice(0, start) + text + editor.value.slice(end);
+	editor.selectionStart = editor.selectionEnd = start + text.length;
+	afterEdit();
+	syncScroll();
+}
+
+editor.addEventListener("keydown", (event) => {
+	if (ac.open) {
+		if (event.key === "ArrowDown") {
+			event.preventDefault();
+			ac.index = (ac.index + 1) % ac.items.length;
+			renderAutocomplete();
+			return;
+		}
+		if (event.key === "ArrowUp") {
+			event.preventDefault();
+			ac.index = (ac.index - 1 + ac.items.length) % ac.items.length;
+			renderAutocomplete();
+			return;
+		}
+		if (event.key === "Enter" || event.key === "Tab") {
+			event.preventDefault();
+			applyCompletion(ac.items[ac.index].name);
+			return;
+		}
+		if (event.key === "Escape") {
+			event.preventDefault();
+			closeAutocomplete();
+			return;
+		}
+	}
+
+	if (event.key === "Tab" && !event.shiftKey && !event.metaKey && !event.ctrlKey && !event.altKey) {
+		event.preventDefault();
+		const prefix = currentPrefix();
+		if (prefix && openAutocomplete(prefix)) return;
+		insertAtCaret("\t");
+	}
+});
+
+editor.addEventListener("blur", closeAutocomplete);
 
 const MIN_FONT_SIZE = 9;
 const MAX_FONT_SIZE = 40;
