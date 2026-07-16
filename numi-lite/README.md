@@ -1,7 +1,8 @@
-# Numi Lite
+# Numi J
 
 A tiny notepad-style calculator desktop app (Electron). Type calculations one per
-line and see the result next to each line. Save your sheets to plain-text files.
+line and see the result next to each line. Open several files at once in tabs and
+save your sheets to plain-text files.
 
 ## Run
 
@@ -25,6 +26,9 @@ npm start
 - Constants: `pi`, `e`, `tau`.
 - Operators: `+ - * / % ^`, parentheses, unary minus.
 - Comments: anything after `#` on a line is ignored.
+- Tabs: open several files at once. `Cmd+N` new tab, `Cmd+O` open in a tab,
+  `Cmd+W` close tab, `Cmd+1..9` jump to a tab, `+` button to add one. Each tab keeps
+  its own file, content and unsaved-changes marker.
 - Save / open `.numi` (plain text) files: `Cmd+S`, `Cmd+O`, `Cmd+N`, `Cmd+Shift+S`.
 - Adjustable text size: titlebar buttons, `Cmd +` / `Cmd -` / `Cmd 0`, or `Cmd`+scroll.
 - Themes: Black (default), White and Violet (Catppuccin Mocha inspired). Picker is in

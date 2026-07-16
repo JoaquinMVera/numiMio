@@ -17,7 +17,7 @@ function createWindow() {
 		height: 620,
 		minWidth: 480,
 		minHeight: 320,
-		title: "Numi Lite",
+		title: "Numi J",
 		icon: ICON_PATH,
 		backgroundColor: "#1e1e24",
 		webPreferences: {
@@ -40,13 +40,14 @@ function buildMenu() {
 		{
 			label: "File",
 			submenu: [
-				{ label: "New", accelerator: "CmdOrCtrl+N", click: () => sendMenu("new") },
+				{ label: "New Tab", accelerator: "CmdOrCtrl+N", click: () => sendMenu("new") },
 				{ label: "Open…", accelerator: "CmdOrCtrl+O", click: () => sendMenu("open") },
 				{ type: "separator" },
 				{ label: "Save", accelerator: "CmdOrCtrl+S", click: () => sendMenu("save") },
 				{ label: "Save As…", accelerator: "CmdOrCtrl+Shift+S", click: () => sendMenu("save-as") },
 				{ type: "separator" },
-				isMac ? { role: "close" } : { role: "quit" },
+				{ label: "Close Tab", accelerator: "CmdOrCtrl+W", click: () => sendMenu("close-tab") },
+				isMac ? { role: "close", accelerator: "CmdOrCtrl+Shift+W" } : { role: "quit" },
 			],
 		},
 		{ role: "editMenu" },

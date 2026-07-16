@@ -76,6 +76,8 @@ body {
 	color: var(--text);
 	font-family: system-ui, -apple-system, sans-serif;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 #titlebar {
@@ -86,16 +88,13 @@ body {
 	background: var(--panel);
 	border-bottom: 1px solid var(--border);
 	user-select: none;
+	flex: 0 0 auto;
 }
 
-#filename {
+#appname {
 	font-size: 13px;
-	font-weight: 600;
-}
-
-#filename.dirty::after {
-	content: " •";
-	color: var(--result);
+	font-weight: 700;
+	letter-spacing: 0.2px;
 }
 
 #hint {
@@ -148,9 +147,101 @@ body {
 	cursor: pointer;
 }
 
+#tabbar {
+	display: flex;
+	align-items: stretch;
+	gap: 2px;
+	padding: 4px 6px 0 6px;
+	background: var(--panel);
+	border-bottom: 1px solid var(--border);
+	overflow-x: auto;
+	overflow-y: hidden;
+	user-select: none;
+	flex: 0 0 auto;
+}
+
+#tabbar::-webkit-scrollbar {
+	height: 0;
+}
+
+.tab {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	max-width: 220px;
+	padding: 6px 8px 6px 12px;
+	border: 1px solid transparent;
+	border-bottom: none;
+	border-radius: 8px 8px 0 0;
+	font-size: 12px;
+	color: var(--muted);
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.tab:hover {
+	background: var(--btn-bg);
+}
+
+.tab.active {
+	background: var(--bg);
+	color: var(--text);
+	border-color: var(--border);
+}
+
+.tab-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.tab.dirty .tab-name::after {
+	content: " •";
+	color: var(--result);
+}
+
+.tab-close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--muted);
+	font-size: 14px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.tab-close:hover {
+	background: var(--btn-active);
+	color: var(--text);
+}
+
+#tab-add {
+	flex: 0 0 auto;
+	align-self: center;
+	width: 26px;
+	height: 24px;
+	margin-left: 2px;
+	border: 1px solid var(--btn-border);
+	border-radius: 6px;
+	background: var(--btn-bg);
+	color: var(--text);
+	font-size: 15px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+#tab-add:hover {
+	background: var(--btn-hover);
+}
+
 #workspace {
 	display: flex;
-	height: calc(100% - 43px);
+	flex: 1 1 auto;
+	min-height: 0;
 	background: var(--bg);
 }
 

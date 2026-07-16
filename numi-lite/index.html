@@ -3,12 +3,12 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';" />
-		<title>Numi Lite</title>
+		<title>Numi J</title>
 		<link rel="stylesheet" href="styles.css" />
 	</head>
 	<body>
 		<header id="titlebar">
-			<span id="filename">Untitled</span>
+			<span id="appname">Numi J</span>
 			<span id="hint">min(3, 4) · a = 5 · a * 2 · doble(x) = x * 2 · doble(9)</span>
 			<span id="zoom">
 				<button id="zoom-out" title="Decrease size (Cmd -)">A−</button>
@@ -21,6 +21,7 @@
 				<option value="violet">Violet</option>
 			</select>
 		</header>
+		<div id="tabbar"></div>
 		<main id="workspace">
 			<div id="editor-wrap">
 				<pre id="highlight" aria-hidden="true"><code id="highlight-code"></code></pre>

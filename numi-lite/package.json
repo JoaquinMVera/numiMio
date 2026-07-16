@@ -1,7 +1,7 @@
 {
-  "name": "numi-lite",
+  "name": "numi-j",
   "version": "0.1.0",
-  "description": "Simple notepad-style calculator with variables, saved to plain-text files",
+  "description": "Numi J — notepad-style calculator with tabs, variables and custom functions, saved to plain-text files",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -10,8 +10,8 @@
   },
   "license": "MIT",
   "build": {
-    "appId": "com.joaquinmartinez.numilite",
-    "productName": "Numi Lite",
+    "appId": "com.joaquinmartinez.numij",
+    "productName": "Numi J",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -31,7 +31,7 @@
       "identity": null
     },
     "dmg": {
-      "title": "Numi Lite"
+      "title": "Numi J"
     }
   },
   "devDependencies": {
