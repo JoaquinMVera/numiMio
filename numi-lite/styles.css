@@ -1,0 +1,107 @@
+:root {
+	--bg: #1e1e24;
+	--panel: #24242c;
+	--text: #e6e6ea;
+	--muted: #6f6f7e;
+	--result: #7ee081;
+	--error: #ff6b6b;
+	--accent: #3a3a46;
+	--line-height: 26px;
+	--font: 15px "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	height: 100%;
+	background: var(--bg);
+	color: var(--text);
+	font-family: system-ui, -apple-system, sans-serif;
+	overflow: hidden;
+}
+
+#titlebar {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	padding: 10px 16px;
+	background: var(--panel);
+	border-bottom: 1px solid var(--accent);
+	user-select: none;
+}
+
+#filename {
+	font-size: 13px;
+	font-weight: 600;
+}
+
+#filename.dirty::after {
+	content: " •";
+	color: var(--result);
+}
+
+#hint {
+	font-size: 12px;
+	color: var(--muted);
+	font-family: var(--font);
+}
+
+#workspace {
+	display: flex;
+	height: calc(100% - 43px);
+}
+
+#editor,
+#results {
+	height: 100%;
+	font: var(--font);
+	line-height: var(--line-height);
+	padding: 16px;
+	white-space: pre;
+	overflow: auto;
+	border: none;
+}
+
+#editor {
+	flex: 1 1 65%;
+	background: var(--bg);
+	color: var(--text);
+	resize: none;
+	outline: none;
+	tab-size: 4;
+}
+
+#results {
+	flex: 1 1 35%;
+	background: var(--panel);
+	border-left: 1px solid var(--accent);
+	text-align: right;
+	overflow-x: hidden;
+	pointer-events: none;
+}
+
+.result-line {
+	height: var(--line-height);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--result);
+}
+
+.result-line.assignment {
+	color: var(--text);
+}
+
+.result-line.error {
+	color: var(--error);
+	font-size: 13px;
+}
+
+.result-line.empty {
+	color: transparent;
+}

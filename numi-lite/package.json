@@ -1,0 +1,13 @@
+{
+  "name": "numi-lite",
+  "version": "0.1.0",
+  "description": "Simple notepad-style calculator with variables, saved to plain-text files",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.2.0"
+  }
+}
