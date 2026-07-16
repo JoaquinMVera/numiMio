@@ -47,6 +47,15 @@ function buildMenu() {
 			],
 		},
 		{ role: "editMenu" },
+		{
+			label: "Text Size",
+			submenu: [
+				{ label: "Increase", accelerator: "CmdOrCtrl+Plus", click: () => sendMenu("zoom-in") },
+				{ label: "Increase", accelerator: "CmdOrCtrl+=", visible: false, click: () => sendMenu("zoom-in") },
+				{ label: "Decrease", accelerator: "CmdOrCtrl+-", click: () => sendMenu("zoom-out") },
+				{ label: "Reset", accelerator: "CmdOrCtrl+0", click: () => sendMenu("zoom-reset") },
+			],
+		},
 		{ role: "viewMenu" },
 	];
 	Menu.setApplicationMenu(Menu.buildFromTemplate(template));

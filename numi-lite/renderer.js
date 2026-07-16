@@ -7,6 +7,28 @@ const filenameEl = document.getElementById("filename");
 let currentPath = null;
 let dirty = false;
 
+const MIN_FONT_SIZE = 9;
+const MAX_FONT_SIZE = 40;
+const DEFAULT_FONT_SIZE = 15;
+let fontSize = parseInt(localStorage.getItem("fontSize"), 10) || DEFAULT_FONT_SIZE;
+
+function applyFontSize() {
+	document.documentElement.style.setProperty("--font-size", `${fontSize}px`);
+	localStorage.setItem("fontSize", String(fontSize));
+}
+
+function changeFontSize(delta) {
+	fontSize = Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, fontSize + delta));
+	applyFontSize();
+	syncScroll();
+}
+
+function resetFontSize() {
+	fontSize = DEFAULT_FONT_SIZE;
+	applyFontSize();
+	syncScroll();
+}
+
 function baseName(filePath) {
 	if (!filePath) return "Untitled";
 	return filePath.split(/[\\/]/).pop();
@@ -126,7 +148,22 @@ window.desktop.onMenu((action) => {
 	else if (action === "open") openFile();
 	else if (action === "save") saveFile(false);
 	else if (action === "save-as") saveFile(true);
+	else if (action === "zoom-in") changeFontSize(1);
+	else if (action === "zoom-out") changeFontSize(-1);
+	else if (action === "zoom-reset") resetFontSize();
 });
+
+document.getElementById("zoom-in").addEventListener("click", () => changeFontSize(1));
+document.getElementById("zoom-out").addEventListener("click", () => changeFontSize(-1));
+document.getElementById("zoom-reset").addEventListener("click", resetFontSize);
+
+editor.addEventListener("wheel", (event) => {
+	if (!event.metaKey && !event.ctrlKey) return;
+	event.preventDefault();
+	changeFontSize(event.deltaY < 0 ? 1 : -1);
+});
+
+applyFontSize();
 
 editor.value = "iva = 21\ndoble(x) = x * 2\nconIva(p) = p + p * iva / 100\n\ndoble(9)\nconIva(1000)\nmin(3, 4) + max(10, 2)\n";
 updateTitle();

@@ -8,9 +8,10 @@
 	--tok-num: #c7b7ff;
 	--tok-comment: #6f6f7e;
 	--tok-op: #9a9aab;
-	--line-height: 26px;
+	--font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+	--font-size: 15px;
+	--line-height: calc(var(--font-size) * 1.73);
 	--pad: 16px;
-	--font: 15px "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
 }
 
 * {
@@ -51,7 +52,38 @@ body {
 #hint {
 	font-size: 12px;
 	color: var(--muted);
-	font-family: var(--font);
+	font-family: var(--font-family);
+	flex: 1 1 auto;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#zoom {
+	display: flex;
+	gap: 6px;
+	margin-left: auto;
+	flex: 0 0 auto;
+}
+
+#zoom button {
+	width: 26px;
+	height: 22px;
+	border: 1px solid #33333f;
+	border-radius: 6px;
+	background: #2a2a33;
+	color: var(--text);
+	font-size: 13px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+#zoom button:hover {
+	background: #33333f;
+}
+
+#zoom button:active {
+	background: #3d3d4a;
 }
 
 #workspace {
@@ -73,7 +105,8 @@ body {
 	inset: 0;
 	height: 100%;
 	width: 100%;
-	font: var(--font);
+	font-family: var(--font-family);
+	font-size: var(--font-size);
 	line-height: var(--line-height);
 	padding: var(--pad);
 	white-space: pre;
@@ -123,7 +156,8 @@ body {
 #results {
 	flex: 1 1 32%;
 	height: 100%;
-	font: var(--font);
+	font-family: var(--font-family);
+	font-size: var(--font-size);
 	line-height: var(--line-height);
 	padding: var(--pad);
 	white-space: pre;
