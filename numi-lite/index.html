@@ -9,10 +9,13 @@
 	<body>
 		<header id="titlebar">
 			<span id="filename">Untitled</span>
-			<span id="hint">min(3, 4) · a = 5 · a * 2 · sqrt(16) · pi</span>
+			<span id="hint">min(3, 4) · a = 5 · a * 2 · doble(x) = x * 2 · doble(9)</span>
 		</header>
 		<main id="workspace">
-			<textarea id="editor" spellcheck="false" autofocus placeholder="Type calculations, one per line…"></textarea>
+			<div id="editor-wrap">
+				<pre id="highlight" aria-hidden="true"><code id="highlight-code"></code></pre>
+				<textarea id="editor" spellcheck="false" autofocus placeholder="Type calculations, one per line…"></textarea>
+			</div>
 			<div id="results"></div>
 		</main>
 		<script src="engine.js"></script>

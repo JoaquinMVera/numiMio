@@ -27,9 +27,15 @@
 		avg: (args) => args.reduce((a, b) => a + b, 0) / args.length,
 	};
 
+	const MAX_DEPTH = 100;
+
 	function roundTo(value, decimals) {
 		const factor = Math.pow(10, decimals);
 		return Math.round(value * factor) / factor;
+	}
+
+	function createContext() {
+		return { scope: {}, userFunctions: {}, depth: 0 };
 	}
 
 	function tokenize(input) {
@@ -80,7 +86,7 @@
 		return tokens;
 	}
 
-	function parseExpression(tokens, scope) {
+	function parseExpression(tokens, ctx) {
 		let pos = 0;
 		const peek = () => tokens[pos];
 		const next = () => tokens[pos++];
@@ -161,11 +167,9 @@
 						}
 					}
 					expect(")");
-					const fn = FUNCTIONS[name];
-					if (!fn) throw new Error(`Unknown function "${name}"`);
-					return fn(args);
+					return callFunction(name, args, ctx);
 				}
-				if (name in scope) return scope[name];
+				if (name in ctx.scope) return ctx.scope[name];
 				if (name in CONSTANTS) return CONSTANTS[name];
 				throw new Error(`Unknown variable "${name}"`);
 			}
@@ -177,27 +181,64 @@
 		return result;
 	}
 
-	function evaluateLine(line, scope) {
+	function callFunction(name, args, ctx) {
+		const userFn = ctx.userFunctions[name];
+		if (userFn) {
+			if (args.length !== userFn.params.length) {
+				throw new Error(`"${name}" expects ${userFn.params.length} argument(s)`);
+			}
+			if (ctx.depth >= MAX_DEPTH) throw new Error("Too much recursion");
+			const localScope = Object.assign({}, ctx.scope);
+			userFn.params.forEach((param, index) => {
+				localScope[param] = args[index];
+			});
+			const localCtx = { scope: localScope, userFunctions: ctx.userFunctions, depth: ctx.depth + 1 };
+			return parseExpression(tokenize(userFn.body), localCtx);
+		}
+		const builtin = FUNCTIONS[name];
+		if (!builtin) throw new Error(`Unknown function "${name}"`);
+		return builtin(args);
+	}
+
+	function evaluateLine(line, ctx) {
 		const stripped = line.replace(/#.*$/, "").trim();
 		if (stripped === "") return { kind: "empty" };
+
+		const defMatch = stripped.match(/^([a-zA-Z_]\w*)\s*\(\s*([a-zA-Z_]\w*(?:\s*,\s*[a-zA-Z_]\w*)*)?\s*\)\s*=\s*(.+)$/);
+		if (defMatch) {
+			const name = defMatch[1];
+			const params = defMatch[2] ? defMatch[2].split(",").map((p) => p.trim()) : [];
+			const body = defMatch[3];
+			parseExpression(tokenize(body), { scope: Object.assign({}, ctx.scope, paramStub(params)), userFunctions: ctx.userFunctions, depth: 0 });
+			ctx.userFunctions[name] = { params, body };
+			return { kind: "function", name, params };
+		}
 
 		const assignMatch = stripped.match(/^([a-zA-Z_]\w*)\s*=\s*(.+)$/);
 		if (assignMatch) {
 			const name = assignMatch[1];
-			const value = parseExpression(tokenize(assignMatch[2]), scope);
-			scope[name] = value;
+			const value = parseExpression(tokenize(assignMatch[2]), ctx);
+			ctx.scope[name] = value;
 			return { kind: "assignment", name, value };
 		}
 
-		const value = parseExpression(tokenize(stripped), scope);
+		const value = parseExpression(tokenize(stripped), ctx);
 		return { kind: "value", value };
 	}
 
+	function paramStub(params) {
+		const stub = {};
+		params.forEach((param) => {
+			stub[param] = 0;
+		});
+		return stub;
+	}
+
 	function evaluateDocument(text) {
-		const scope = {};
+		const ctx = createContext();
 		return text.split("\n").map((line) => {
 			try {
-				return evaluateLine(line, scope);
+				return evaluateLine(line, ctx);
 			} catch (err) {
 				return { kind: "error", message: err.message };
 			}
@@ -210,7 +251,7 @@
 		return new Intl.NumberFormat("en-US", { maximumFractionDigits: 10 }).format(rounded);
 	}
 
-	const api = { evaluateDocument, evaluateLine, formatNumber, FUNCTIONS, CONSTANTS };
+	const api = { evaluateDocument, evaluateLine, createContext, formatNumber, FUNCTIONS, CONSTANTS };
 
 	if (typeof module !== "undefined" && module.exports) module.exports = api;
 	else root.CalcEngine = api;

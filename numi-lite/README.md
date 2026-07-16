@@ -15,9 +15,13 @@ npm start
 
 - Live evaluation, one result per line.
 - Variables: `a = 5`, then reuse `a` on later lines.
-- Functions (comma-separated args): `min`, `max`, `sqrt`, `cbrt`, `abs`, `round`,
-  `floor`, `ceil`, `trunc`, `sign`, `pow`, `log`, `ln`, `exp`, `sin`, `cos`, `tan`,
-  `sum`, `avg`.
+- Custom functions: `double(x) = x * 2`, then call `double(9)`. Definitions can use
+  other variables and functions.
+- Syntax highlighting in the editor: variables, functions, numbers and comments each
+  get a distinct color.
+- Built-in functions (comma-separated args): `min`, `max`, `sqrt`, `cbrt`, `abs`,
+  `round`, `floor`, `ceil`, `trunc`, `sign`, `pow`, `log`, `ln`, `exp`, `sin`, `cos`,
+  `tan`, `sum`, `avg`.
 - Constants: `pi`, `e`, `tau`.
 - Operators: `+ - * / % ^`, parentheses, unary minus.
 - Comments: anything after `#` on a line is ignored.
@@ -26,12 +30,12 @@ npm start
 ## Example
 
 ```
-a = 12
-b = 8
-min(a, b)      # 8
-max(a, b)      # 12
-(a + b) * 2    # 40
-sqrt(144)      # 12
+iva = 21
+conIva(p) = p + p * iva / 100
+conIva(1000)   # 1210
+double(x) = x * 2
+double(9)      # 18
+min(3, 4) + max(10, 2)  # 13
 ```
 
 ## How to iterate

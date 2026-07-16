@@ -1,12 +1,15 @@
 :root {
 	--bg: #1e1e24;
-	--panel: #24242c;
 	--text: #e6e6ea;
 	--muted: #6f6f7e;
 	--result: #7ee081;
-	--error: #ff6b6b;
-	--accent: #3a3a46;
+	--tok-var: #ffd479;
+	--tok-func: #79b8ff;
+	--tok-num: #c7b7ff;
+	--tok-comment: #6f6f7e;
+	--tok-op: #9a9aab;
 	--line-height: 26px;
+	--pad: 16px;
 	--font: 15px "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
 }
 
@@ -30,8 +33,8 @@ body {
 	align-items: baseline;
 	gap: 12px;
 	padding: 10px 16px;
-	background: var(--panel);
-	border-bottom: 1px solid var(--accent);
+	background: var(--bg);
+	border-bottom: 1px solid #2c2c36;
 	user-select: none;
 }
 
@@ -54,34 +57,79 @@ body {
 #workspace {
 	display: flex;
 	height: calc(100% - 43px);
+	background: var(--bg);
+}
+
+#editor-wrap {
+	position: relative;
+	flex: 1 1 68%;
+	height: 100%;
+	overflow: hidden;
 }
 
 #editor,
-#results {
+#highlight {
+	position: absolute;
+	inset: 0;
 	height: 100%;
+	width: 100%;
 	font: var(--font);
 	line-height: var(--line-height);
-	padding: 16px;
+	padding: var(--pad);
 	white-space: pre;
 	overflow: auto;
 	border: none;
-}
-
-#editor {
-	flex: 1 1 65%;
-	background: var(--bg);
-	color: var(--text);
-	resize: none;
-	outline: none;
+	margin: 0;
 	tab-size: 4;
 }
 
+#highlight {
+	pointer-events: none;
+	overflow: hidden;
+	color: var(--text);
+	z-index: 1;
+}
+
+#editor {
+	background: transparent;
+	color: transparent;
+	caret-color: var(--text);
+	resize: none;
+	outline: none;
+	z-index: 2;
+}
+
+#editor::selection {
+	background: #3a3a4d;
+}
+
+.tok-var {
+	color: var(--tok-var);
+}
+.tok-func {
+	color: var(--tok-func);
+}
+.tok-num {
+	color: var(--tok-num);
+}
+.tok-comment {
+	color: var(--tok-comment);
+	font-style: italic;
+}
+.tok-op {
+	color: var(--tok-op);
+}
+
 #results {
-	flex: 1 1 35%;
-	background: var(--panel);
-	border-left: 1px solid var(--accent);
+	flex: 1 1 32%;
+	height: 100%;
+	font: var(--font);
+	line-height: var(--line-height);
+	padding: var(--pad);
+	white-space: pre;
+	overflow: hidden;
+	background: var(--bg);
 	text-align: right;
-	overflow-x: hidden;
 	pointer-events: none;
 }
 
@@ -94,12 +142,7 @@ body {
 }
 
 .result-line.assignment {
-	color: var(--text);
-}
-
-.result-line.error {
-	color: var(--error);
-	font-size: 13px;
+	color: var(--muted);
 }
 
 .result-line.empty {
