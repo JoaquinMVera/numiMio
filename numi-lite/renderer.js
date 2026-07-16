@@ -307,7 +307,7 @@ function renderAutocomplete() {
 		li.appendChild(kind);
 		li.addEventListener("mousedown", (event) => {
 			event.preventDefault();
-			applyCompletion(item.name);
+			applyCompletion(item);
 		});
 		autocompleteEl.appendChild(li);
 	});
@@ -327,7 +327,7 @@ function openAutocomplete(prefix, keepOpenOnly) {
 	if (matches.length === 1 && !keepOpenOnly) {
 		ac.start = prefix.start;
 		ac.prefix = prefix.text;
-		applyCompletion(matches[0].name);
+		applyCompletion(matches[0]);
 		return true;
 	}
 	ac.open = true;
@@ -345,11 +345,21 @@ function closeAutocomplete() {
 	autocompleteEl.classList.add("hidden");
 }
 
-function applyCompletion(name) {
+function applyCompletion(item) {
 	const caret = editor.selectionStart;
-	editor.value = editor.value.slice(0, ac.start) + name + editor.value.slice(caret);
-	const newCaret = ac.start + name.length;
-	editor.selectionStart = editor.selectionEnd = newCaret;
+	const rest = editor.value.slice(caret);
+	let insert = item.name;
+	let caretOffset = insert.length;
+	if (item.kind === "fn") {
+		if (rest[0] === "(") {
+			caretOffset = insert.length + 1;
+		} else {
+			insert = `${item.name}()`;
+			caretOffset = item.name.length + 1;
+		}
+	}
+	editor.value = editor.value.slice(0, ac.start) + insert + rest;
+	editor.selectionStart = editor.selectionEnd = ac.start + caretOffset;
 	closeAutocomplete();
 	afterEdit();
 	syncScroll();
@@ -381,7 +391,7 @@ editor.addEventListener("keydown", (event) => {
 		}
 		if (event.key === "Enter" || event.key === "Tab") {
 			event.preventDefault();
-			applyCompletion(ac.items[ac.index].name);
+			applyCompletion(ac.items[ac.index]);
 			return;
 		}
 		if (event.key === "Escape") {
@@ -396,6 +406,40 @@ editor.addEventListener("keydown", (event) => {
 		const prefix = currentPrefix();
 		if (prefix && openAutocomplete(prefix)) return;
 		insertAtCaret("\t");
+		return;
+	}
+
+	if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+	if (event.key === "(") {
+		event.preventDefault();
+		closeAutocomplete();
+		const start = editor.selectionStart;
+		const end = editor.selectionEnd;
+		const selected = editor.value.slice(start, end);
+		editor.value = `${editor.value.slice(0, start)}(${selected})${editor.value.slice(end)}`;
+		editor.selectionStart = start + 1;
+		editor.selectionEnd = start + 1 + selected.length;
+		afterEdit();
+		syncScroll();
+		return;
+	}
+
+	if (event.key === ")" && editor.selectionStart === editor.selectionEnd && editor.value[editor.selectionStart] === ")") {
+		event.preventDefault();
+		editor.selectionStart = editor.selectionEnd = editor.selectionStart + 1;
+		return;
+	}
+
+	if (event.key === "Backspace" && editor.selectionStart === editor.selectionEnd) {
+		const i = editor.selectionStart;
+		if (editor.value[i - 1] === "(" && editor.value[i] === ")") {
+			event.preventDefault();
+			editor.value = editor.value.slice(0, i - 1) + editor.value.slice(i + 1);
+			editor.selectionStart = editor.selectionEnd = i - 1;
+			afterEdit();
+			syncScroll();
+		}
 	}
 });
 

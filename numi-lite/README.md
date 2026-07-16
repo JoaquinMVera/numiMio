@@ -21,7 +21,10 @@ npm start
 - Autocomplete: press `Tab` to complete a variable or function name (declared vars,
   custom/built-in functions and constants). Matching is case-insensitive; if several
   match, a menu appears — navigate with `↑`/`↓`, accept with `Tab`/`Enter`, dismiss
-  with `Esc`.
+  with `Esc`. Completing a function inserts `()` and leaves the caret inside.
+- Auto-closing parentheses: typing `(` inserts the matching `)` (wrapping any
+  selection) and keeps the caret inside; typing `)` over an existing one steps past
+  it, and backspacing an empty `()` removes both.
 - Syntax highlighting in the editor: variables, functions, numbers and comments each
   get a distinct color.
 - Built-in functions (comma-separated args): `min`, `max`, `sqrt`, `cbrt`, `abs`,
