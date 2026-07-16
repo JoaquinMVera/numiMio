@@ -4,10 +4,38 @@
   "description": "Simple notepad-style calculator with variables, saved to plain-text files",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "license": "MIT",
+  "build": {
+    "appId": "com.joaquinmartinez.numilite",
+    "productName": "Numi Lite",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "**/*",
+      "!dist/**",
+      "!build/icon.iconset/**"
+    ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.productivity",
+      "identity": null
+    },
+    "dmg": {
+      "title": "Numi Lite"
+    }
+  },
   "devDependencies": {
-    "electron": "^33.2.0"
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
   }
 }

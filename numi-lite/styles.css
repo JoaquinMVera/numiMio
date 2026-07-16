@@ -1,17 +1,66 @@
 :root {
+	--font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+	--font-size: 15px;
+	--line-height: calc(var(--font-size) * 1.73);
+	--pad: 16px;
+}
+
+:root,
+[data-theme="dark"] {
 	--bg: #1e1e24;
+	--panel: #1e1e24;
 	--text: #e6e6ea;
 	--muted: #6f6f7e;
+	--border: #2c2c36;
 	--result: #7ee081;
 	--tok-var: #ffd479;
 	--tok-func: #79b8ff;
 	--tok-num: #c7b7ff;
 	--tok-comment: #6f6f7e;
 	--tok-op: #9a9aab;
-	--font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-	--font-size: 15px;
-	--line-height: calc(var(--font-size) * 1.73);
-	--pad: 16px;
+	--btn-bg: #2a2a33;
+	--btn-border: #33333f;
+	--btn-hover: #33333f;
+	--btn-active: #3d3d4a;
+	--selection: #3a3a4d;
+}
+
+[data-theme="light"] {
+	--bg: #ffffff;
+	--panel: #f4f4f6;
+	--text: #24242b;
+	--muted: #9a9aab;
+	--border: #e3e3e8;
+	--result: #1f9d57;
+	--tok-var: #b3760a;
+	--tok-func: #2f6bd0;
+	--tok-num: #7a41d9;
+	--tok-comment: #a0a0ac;
+	--tok-op: #8a8a99;
+	--btn-bg: #ececf0;
+	--btn-border: #d8d8de;
+	--btn-hover: #e2e2e8;
+	--btn-active: #d6d6de;
+	--selection: #cfe0ff;
+}
+
+[data-theme="violet"] {
+	--bg: #1e1e2e;
+	--panel: #181825;
+	--text: #cdd6f4;
+	--muted: #6c7086;
+	--border: #313244;
+	--result: #a6e3a1;
+	--tok-var: #f9e2af;
+	--tok-func: #89b4fa;
+	--tok-num: #cba6f7;
+	--tok-comment: #6c7086;
+	--tok-op: #9399b2;
+	--btn-bg: #313244;
+	--btn-border: #45475a;
+	--btn-hover: #45475a;
+	--btn-active: #585b70;
+	--selection: #45475a;
 }
 
 * {
@@ -34,8 +83,8 @@ body {
 	align-items: baseline;
 	gap: 12px;
 	padding: 10px 16px;
-	background: var(--bg);
-	border-bottom: 1px solid #2c2c36;
+	background: var(--panel);
+	border-bottom: 1px solid var(--border);
 	user-select: none;
 }
 
@@ -69,9 +118,9 @@ body {
 #zoom button {
 	width: 26px;
 	height: 22px;
-	border: 1px solid #33333f;
+	border: 1px solid var(--btn-border);
 	border-radius: 6px;
-	background: #2a2a33;
+	background: var(--btn-bg);
 	color: var(--text);
 	font-size: 13px;
 	line-height: 1;
@@ -79,11 +128,24 @@ body {
 }
 
 #zoom button:hover {
-	background: #33333f;
+	background: var(--btn-hover);
 }
 
 #zoom button:active {
-	background: #3d3d4a;
+	background: var(--btn-active);
+}
+
+#theme {
+	flex: 0 0 auto;
+	height: 24px;
+	border: 1px solid var(--btn-border);
+	border-radius: 6px;
+	background: var(--btn-bg);
+	color: var(--text);
+	font-family: var(--font-family);
+	font-size: 12px;
+	padding: 0 6px;
+	cursor: pointer;
 }
 
 #workspace {
@@ -133,7 +195,7 @@ body {
 }
 
 #editor::selection {
-	background: #3a3a4d;
+	background: var(--selection);
 }
 
 .tok-var {

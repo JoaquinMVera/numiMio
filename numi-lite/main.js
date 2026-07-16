@@ -9,6 +9,8 @@ const FILE_FILTERS = [
 
 let mainWindow = null;
 
+const ICON_PATH = path.join(__dirname, "build", "icon.png");
+
 function createWindow() {
 	mainWindow = new BrowserWindow({
 		width: 900,
@@ -16,6 +18,7 @@ function createWindow() {
 		minWidth: 480,
 		minHeight: 320,
 		title: "Numi Lite",
+		icon: ICON_PATH,
 		backgroundColor: "#1e1e24",
 		webPreferences: {
 			preload: path.join(__dirname, "preload.js"),
@@ -87,6 +90,11 @@ ipcMain.handle("dialog-save", async (event, { path: filePath, content, forceDial
 });
 
 app.whenReady().then(() => {
+	if (process.platform === "darwin" && app.dock) {
+		try {
+			app.dock.setIcon(ICON_PATH);
+		} catch (err) {}
+	}
 	buildMenu();
 	createWindow();
 	app.on("activate", () => {

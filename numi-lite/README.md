@@ -26,6 +26,27 @@ npm start
 - Operators: `+ - * / % ^`, parentheses, unary minus.
 - Comments: anything after `#` on a line is ignored.
 - Save / open `.numi` (plain text) files: `Cmd+S`, `Cmd+O`, `Cmd+N`, `Cmd+Shift+S`.
+- Adjustable text size: titlebar buttons, `Cmd +` / `Cmd -` / `Cmd 0`, or `Cmd`+scroll.
+- Themes: Black (default), White and Violet (Catppuccin Mocha inspired). Picker is in
+  the titlebar; the choice is remembered across sessions.
+
+## Build an installer
+
+The app icon lives in `build/` (`icon.svg` → `icon.png` / `icon.icns`).
+
+```bash
+cd numi-lite
+npm install
+npm run dist   # builds dist/Numi Lite-<version>-arm64.dmg (and a .zip)
+```
+
+Open the generated `.dmg` and drag **Numi Lite** into `Applications`.
+
+The build is unsigned (no Apple Developer certificate), so the first launch is
+gated by Gatekeeper: right-click the app → **Open**, or run
+`xattr -dr com.apple.quarantine "/Applications/Numi Lite.app"`.
+
+Use `npm run pack` for an unpacked `dist/mac-*/Numi Lite.app` without a DMG.
 
 ## Example
 

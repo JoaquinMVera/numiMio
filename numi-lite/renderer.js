@@ -157,6 +157,24 @@ document.getElementById("zoom-in").addEventListener("click", () => changeFontSiz
 document.getElementById("zoom-out").addEventListener("click", () => changeFontSize(-1));
 document.getElementById("zoom-reset").addEventListener("click", resetFontSize);
 
+const THEMES = ["dark", "light", "violet"];
+const themeSelect = document.getElementById("theme");
+let theme = localStorage.getItem("theme");
+if (!THEMES.includes(theme)) theme = "dark";
+
+function applyTheme() {
+	document.documentElement.setAttribute("data-theme", theme);
+	localStorage.setItem("theme", theme);
+	themeSelect.value = theme;
+}
+
+themeSelect.addEventListener("change", () => {
+	theme = themeSelect.value;
+	applyTheme();
+});
+
+applyTheme();
+
 editor.addEventListener("wheel", (event) => {
 	if (!event.metaKey && !event.ctrlKey) return;
 	event.preventDefault();
