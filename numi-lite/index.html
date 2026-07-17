@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';" />
+		<title>Numi J</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<header id="titlebar">
+			<span id="appname">Numi J</span>
+			<span id="hint">min(3, 4) · a = 5 · a * 2 · doble(x) = x * 2 · doble(9)</span>
+			<span id="zoom">
+				<button id="zoom-out" title="Decrease size (Cmd -)">A−</button>
+				<button id="zoom-reset" title="Reset size (Cmd 0)">A</button>
+				<button id="zoom-in" title="Increase size (Cmd +)">A+</button>
+			</span>
+			<select id="theme" title="Theme">
+				<option value="dark">Black</option>
+				<option value="light">White</option>
+				<option value="violet">Violet</option>
+			</select>
+		</header>
+		<div id="tabbar"></div>
+		<main id="workspace">
+			<div id="editor-wrap">
+				<pre id="highlight" aria-hidden="true"><code id="highlight-code"></code></pre>
+				<textarea id="editor" spellcheck="false" autofocus placeholder="Type calculations, one per line…"></textarea>
+				<ul id="autocomplete" class="hidden"></ul>
+			</div>
+			<div id="results"></div>
+		</main>
+		<script src="engine.js"></script>
+		<script src="renderer.js"></script>
+	</body>
+</html>
