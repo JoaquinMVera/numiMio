@@ -22,7 +22,7 @@
 	--btn-border: #33333f;
 	--btn-hover: #33333f;
 	--btn-active: #3d3d4a;
-	--selection: #3a3a4d;
+	--selection: rgba(120, 138, 214, 0.35);
 }
 
 [data-theme="light"] {
@@ -41,7 +41,7 @@
 	--btn-border: #d8d8de;
 	--btn-hover: #e2e2e8;
 	--btn-active: #d6d6de;
-	--selection: #cfe0ff;
+	--selection: rgba(47, 107, 208, 0.24);
 }
 
 [data-theme="violet"] {
@@ -60,7 +60,7 @@
 	--btn-border: #45475a;
 	--btn-hover: #45475a;
 	--btn-active: #585b70;
-	--selection: #45475a;
+	--selection: rgba(137, 180, 250, 0.30);
 }
 
 * {
